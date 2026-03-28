@@ -298,7 +298,7 @@ footer p{font-size:0.75rem;color:var(--muted);}
         <span class="pamt">$250 MXN</span>
       </button>
     </div>
-    <p class="mn">🔒 Pagos CAD y USD procesados por Stripe · Acceso inmediato<br>¿Dudas? WhatsApp +1 519-613-3651</p>
+    <p class="mn">🔒 Pagos CAD y USD procesados por Stripe · Acceso inmediato<br>¿Dudas? WhatsApp +1 519-272-4020</p>
   </div>
 </div>
 
@@ -317,9 +317,9 @@ footer p{font-size:0.75rem;color:var(--muted);}
     </div>
     <div class="mxnnote">
       <strong style="color:var(--p3)">Después de transferir:</strong><br>
-      Manda tu comprobante por WhatsApp al <strong>+1 519-613-3651</strong> y te damos acceso al curso en minutos ✅
+      Manda tu comprobante por WhatsApp al <strong>+1 519-272-4020</strong> y te damos acceso al curso en minutos ✅
     </div>
-    <a class="btn" style="width:100%;justify-content:center;font-size:0.88rem" href="https://wa.me/15196133651?text=Hola!%20Quiero%20el%20curso%20Lolo%20Basic%20English.%20Te%20mando%20mi%20comprobante%20de%20%24250%20MXN%20%E2%9C%85" target="_blank">
+    <a class="btn" style="width:100%;justify-content:center;font-size:0.88rem" href="https://wa.me/15192724020?text=Hola!%20Quiero%20el%20curso%20Lolo%20Basic%20English.%20Te%20mando%20mi%20comprobante%20de%20%24250%20MXN%20%E2%9C%85" target="_blank">
       💬 Enviar comprobante por WhatsApp
     </a>
   </div>
@@ -343,7 +343,7 @@ footer p{font-size:0.75rem;color:var(--muted);}
 <script>
 const STRIPE_CAD = "https://buy.stripe.com/28EbJ18ex6HH87X8fA8g002";
 const STRIPE_USD = "https://buy.stripe.com/3cI3cv9iB8PPgEtdzU8g001";
-const WA = "15196133651";
+const WA = "15192724020";
 
 const topics=[
   {n:1,e:"👋",t:"Greetings",s:"Saludos"},{n:2,e:"🪪",t:"Introductions",s:"Presentaciones"},
@@ -422,7 +422,7 @@ async function sc(){
   addUser(txt);inp.value='';
   await new Promise(r=>setTimeout(r,600));
   const l=txt.toLowerCase();
-  if(waitName){waitName=false;addBot(`¡Mucho gusto, <b>${txt}</b>! 😊\n\nElige cómo pagar:`,['🇨🇦 $10 CAD','🇺🇸 $10 USD','🇲🇽 $250 MXN']);return;}
+  if(waitName){waitName=false;addBot(`¡Mucho gusto, <b>${txt}</b>! 😊\n\nElige cómo pagar:`,['🇨🇦 $15 CAD','🇺🇸 $10 USD','🇲🇽 $350 MXN']);return;}
   if(l.includes('incluye')||l.includes('contenido')||l.includes('📚'))
     addBot('✅ <b>15 temas</b> de inglés diario\n✅ <b>100+ palabras</b> con pronunciación\n✅ <b>45+ conversaciones</b> reales\n✅ Acceso de <b>por vida</b>',['Comprar 💳','Precios 💰']);
   else if(l.includes('precio')||l.includes('cuesta')||l.includes('💰')||l.includes('cuánto'))
@@ -440,7 +440,7 @@ async function sc(){
   else if(l.includes('hola')||l.includes('hi'))
     {waitName=true;addBot('¡Hola! 😊 ¿Cómo te llamas?');}
   else if(l.includes('whatsapp')||l.includes('contacto'))
-    addBot(`Escríbenos directo:\n<a href="https://wa.me/${WA}" target="_blank" style="color:var(--p2);font-weight:700">💬 WhatsApp +1 519-613-3651</a>`);
+    addBot(`Escríbenos directo:\n<a href="https://wa.me/${WA}" target="_blank" style="color:var(--p2);font-weight:700">💬 WhatsApp +1 519-272-4020</a>`);
   else
     addBot('¡Gracias por escribir! 🌟\n<b>Lolo Basic English</b> — inglés desde cero por solo <b>$10 CAD</b>',['¿Qué incluye? 📚','Comprar 💳','Precios 💰']);
 }
