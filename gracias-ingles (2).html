@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Gracias por tu compra! — Lolo Basic English</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0d0f18;color:#f0f2ff;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden;}
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.card{background:#151825;border:2px solid rgba(6,214,160,0.3);border-radius:24px;padding:40px 28px;max-width:480px;width:100%;text-align:center;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.emoji{font-size:3.5rem;margin-bottom:16px;display:block;}
+h1{font-family:'Righteous',cursive;font-size:2rem;color:#06D6A0;margin-bottom:10px;}
+.sub{font-size:0.95rem;color:#8892b0;font-weight:600;line-height:1.6;margin-bottom:28px;}
+.codigo-box{background:linear-gradient(135deg,rgba(255,107,53,0.15),rgba(255,210,63,0.15));border:2px dashed rgba(255,210,63,0.5);border-radius:16px;padding:20px;margin-bottom:24px;}
+.codigo-label{font-size:0.7rem;font-weight:800;color:#FFD23F;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.codigo{font-family:'Righteous',cursive;font-size:2.2rem;color:#FFD23F;letter-spacing:4px;margin-bottom:8px;}
+.codigo-desc{font-size:0.8rem;color:#8892b0;font-weight:600;line-height:1.5;}
+.btn-curso{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#FF6B35,#FFD23F);color:#0d0f18;text-decoration:none;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;font-weight:800;margin-bottom:12px;transition:all 0.2s;}
+.btn-curso:hover{transform:translateY(-2px);opacity:0.92;}
+.btn-wa{display:block;width:100%;padding:14px;background:#25D366;color:white;text-decoration:none;border-radius:14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;font-weight:800;margin-bottom:20px;transition:all 0.2s;}
+.btn-wa:hover{transform:translateY(-2px);opacity:0.92;}
+.pasos{background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;text-align:left;margin-bottom:20px;}
+.pasos-title{font-size:0.7rem;font-weight:800;color:#9B5DE5;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;}
+.paso{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.paso-n{background:#9B5DE5;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:800;flex-shrink:0;margin-top:1px;}
+.paso p{font-size:0.82rem;color:#c8cfe0;font-weight:600;line-height:1.4;}
+.paso p strong{color:#f0f2ff;}
+.footer{font-size:0.72rem;color:#8892b0;font-weight:600;line-height:1.6;}
+.footer a{color:#FF6B35;text-decoration:none;}
+
+/* CONFETTI */
+.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;opacity:0;animation:fall linear infinite;}
+@keyframes fall{0%{opacity:1;top:-10px;transform:rotate(0deg);}100%{opacity:0;top:100vh;transform:rotate(720deg);}}
+</style>
+</head>
+<body>
+<div class="confetti-wrap" id="confetti"></div>
+<div class="card">
+  <span class="emoji">🎉</span>
+  <h1>¡Felicidades!</h1>
+  <p class="sub">Tu pago fue exitoso. Bienvenido a <strong>Lolo Basic English</strong> — tu camino hacia el inglés empieza ahora.</p>
+
+  <div class="codigo-box">
+    <div class="codigo-label">🔑 Tu código de acceso</div>
+    <div class="codigo">LOLO2024</div>
+    <div class="codigo-desc">Guarda este código — lo necesitas para entrar al curso</div>
+  </div>
+
+  <div class="pasos">
+    <div class="pasos-title">📋 Cómo acceder al curso</div>
+    <div class="paso"><div class="paso-n">1</div><p>Da clic en <strong>"Entrar al curso"</strong> abajo</p></div>
+    <div class="paso"><div class="paso-n">2</div><p>Escribe el código <strong>LOLO2024</strong> cuando te lo pida</p></div>
+    <div class="paso"><div class="paso-n">3</div><p>¡Listo! Ya tienes acceso completo a los <strong>16 módulos</strong> 🚀</p></div>
+  </div>
+
+  <a href="https://danyyalexlove-collab.github.io/lolo-cursos/lolo-basic-english-web-7.html" class="btn-curso">🎓 Entrar al curso ahora →</a>
+  <a href="https://wa.me/15192724020?text=¡Hola! Ya realicé mi pago del curso Lolo Basic English. Mi código es LOLO2024 ✅" class="btn-wa">💬 Escríbenos por WhatsApp</a>
+
+  <div class="footer">
+    ¿Tienes dudas? Contáctanos al <a href="tel:+15192724020">+1 519-272-4020</a><br>
+    Acceso de por vida · Sin suscripciones · Soporte incluido
+  </div>
+</div>
+
+<script>
+// Confetti
+const colors = ['#FF6B35','#FFD23F','#06D6A0','#9B5DE5','#118AB2'];
+const wrap = document.getElementById('confetti');
+for(let i = 0; i < 60; i++) {
+  const el = document.createElement('div');
+  el.className = 'confetti-piece';
+  el.style.left = Math.random() * 100 + 'vw';
+  el.style.background = colors[Math.floor(Math.random() * colors.length)];
+  el.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+  el.style.width = (Math.random() * 8 + 6) + 'px';
+  el.style.height = (Math.random() * 8 + 6) + 'px';
+  el.style.animationDuration = (Math.random() * 3 + 2) + 's';
+  el.style.animationDelay = (Math.random() * 3) + 's';
+  wrap.appendChild(el);
+}
+</script>
+</body>
+</html>
