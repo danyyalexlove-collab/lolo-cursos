@@ -100,8 +100,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(13,15,24,0.9
 .fi .ctx{font-size:0.68rem;color:var(--p3);margin-top:3px;font-weight:700;}
 
 /* VIDEO */
-.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin-bottom:8px;}
-.video-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:12px;}
+
+
 .video-label{font-size:0.72rem;color:var(--text2);font-weight:700;margin-bottom:12px;padding-left:4px;}
 
 /* TIP */
@@ -145,12 +145,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(13,15,24,0.9
 
 @media(max-width:380px){.vocab-grid{grid-template-columns:1fr;}.nivel-grid{grid-template-columns:1fr;}}
 
-.video-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#FF0000,#cc0000);color:white;text-decoration:none;padding:14px 18px;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.88rem;font-weight:800;margin-bottom:12px;transition:all 0.2s;}
-.video-btn:hover{transform:translateY(-2px);opacity:0.9;}
-.vi{cursor:pointer;transition:all 0.15s;}
-.vi:hover{border-color:rgba(6,214,160,0.5);transform:scale(1.02);}
-.fi{cursor:pointer;transition:all 0.15s;}
-.fi:hover{border-left-color:var(--p3);}
+.yt-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:#FF0000;color:white;text-decoration:none;padding:15px 18px;border-radius:13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.85rem;font-weight:800;margin-bottom:10px;transition:all 0.2s;text-align:center;line-height:1.4;}
+.yt-btn:active{opacity:0.85;transform:scale(0.98);}
+.audio-btn{margin-top:8px;width:100%;background:rgba(6,214,160,0.1);border:1.5px solid rgba(6,214,160,0.3);color:#06D6A0;padding:8px 14px;border-radius:20px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.78rem;font-weight:800;cursor:pointer;transition:all 0.15s;}
+.audio-btn.playing{background:rgba(6,214,160,0.25);}
 </style>
 </head>
 <body>
@@ -854,10 +852,11 @@ function renderModuloContent(m) {
     <div class="sec-title">📖 Vocabulario</div>
     <div class="vocab-grid">
       ${m.vocab.map(v => `
-        <div class="vi" onclick="hablar('${v.en.replace(/'/g,'')}')">
-          <div class="en">${v.en} <span style="font-size:0.7rem;color:#06D6A0">▶</span></div>
+        <div class="vi">
+          <div class="en">${v.en}</div>
           <div class="es">${v.es}</div>
           <div class="pr">🔊 ${v.pr}</div>
+          <button class="audio-btn" data-txt="${v.en.split('/')[0].trim()}" onclick="hablar(this)">🔊 Escuchar</button>
         </div>
       `).join('')}
     </div>
@@ -872,11 +871,8 @@ function renderModuloContent(m) {
       </div>
     `).join('')}
 
-    <div class="sec-title">🎬 Video</div>
-    <div class="video-wrap">
-      <iframe src="https://www.youtube.com/embed/${m.video.id}?rel=0" allowfullscreen loading="lazy"></iframe>
-    </div>
-    <div class="video-label">${m.video.label}</div>
+    <div class="sec-title">🎬 Video de apoyo</div>
+    <a href="https://www.youtube.com/results?search_query=ingles+${encodeURIComponent(m.sub)}+principiantes+espanol" target="_blank" rel="noopener" class="yt-btn">▶️ Buscar videos en YouTube: ${m.sub}</a>
 
     <div class="tip">
       <div class="tip-t">💡 Tip para Canadá</div>
@@ -1015,15 +1011,35 @@ function closeModal() {
 }
 
 
-// ===== TEXTO A VOZ =====
-function hablar(texto) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(texto);
+function hablar(btn) {
+  const texto = btn.getAttribute('data-txt');
+  if (!texto || !('speechSynthesis' in window)) {
+    alert('Usa Google Chrome para escuchar el audio');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  setTimeout(function() {
+    var u = new SpeechSynthesisUtterance(texto);
     u.lang = 'en-US';
-    u.rate = 0.85;
-    u.pitch = 1;
+    u.rate = 0.80;
+    u.volume = 1.0;
+    u.pitch = 1.0;
+    var voices = window.speechSynthesis.getVoices();
+    var eng = voices.find(function(v){ return v.lang === 'en-US'; }) || 
+              voices.find(function(v){ return v.lang.indexOf('en') === 0; });
+    if (eng) u.voice = eng;
+    var orig = btn.textContent;
+    btn.textContent = '⏸ Reproduciendo...';
+    btn.classList.add('playing');
+    u.onend = function(){ btn.textContent = orig; btn.classList.remove('playing'); };
+    u.onerror = function(){ btn.textContent = orig; btn.classList.remove('playing'); };
     window.speechSynthesis.speak(u);
+  }, 100);
+}
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
   }
 }
 
