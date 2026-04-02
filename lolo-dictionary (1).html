@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lolo Dictionary</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --accent: #f0c040;
+    --accent2: #ff6b35;
+    --text: #f0ede8;
+    --muted: #888;
+    --border: #2a2a2a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--accent); letter-spacing: -1px; }
+  .logo span { color: var(--text); }
+  header p { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .search-wrap { padding: 24px 16px 12px; max-width: 700px; margin: 0 auto; }
+  .search-box {
+    display: flex; align-items: center;
+    background: var(--card); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 12px 16px; gap: 10px;
+    transition: border-color .2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    background: none; border: none; outline: none;
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; width: 100%;
+  }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .tabs { display: flex; gap: 8px; padding: 0 16px 16px; max-width: 700px; margin: 0 auto; flex-wrap: wrap; }
+  .tab {
+    padding: 8px 18px; border-radius: 100px; font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; border: 1.5px solid var(--border); background: none; color: var(--muted);
+    transition: all .2s; font-family: 'DM Sans', sans-serif;
+  }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  .stats { display: flex; gap: 10px; padding: 0 16px 16px; max-width: 700px; margin: 0 auto; flex-wrap: wrap; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 0.72rem; color: var(--muted); }
+  .stat strong { color: var(--accent); font-size: 1.05rem; display: block; }
+
+  .results-count { padding: 0 16px 10px; max-width: 700px; margin: 0 auto; font-size: 0.75rem; color: var(--muted); }
+
+  .grid { padding: 0 16px 60px; max-width: 700px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media(max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px; cursor: pointer;
+    transition: border-color .2s, transform .15s; position: relative; overflow: hidden;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card.phrasal { border-left: 3px solid var(--accent2); }
+  .card-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; margin-bottom: 6px; }
+  .card-tag.v { color: var(--accent); }
+  .card-tag.p { color: var(--accent2); }
+  .card-en { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 4px; padding-right: 24px; }
+  .card-es { font-size: 0.82rem; color: var(--muted); }
+  .card-ex { font-size: 0.73rem; color: #666; font-style: italic; line-height: 1.4; display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .card.open .card-ex { display: block; }
+  .speak-btn { position: absolute; top: 12px; right: 10px; background: none; border: none; cursor: pointer; font-size: 0.85rem; color: var(--muted); transition: color .2s; }
+  .speak-btn:hover { color: var(--accent); }
+
+  .letter-div { grid-column: 1/-1; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: #333; padding: 8px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 2px; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1/-1; }
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 0.72rem; border-top: 1px solid var(--border); }
+  footer span { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">LOLO <span>Dictionary</span></div>
+    <p>Inglés para latinos 🇲🇽🇨🇦</p>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span>🔍</span>
+    <input type="text" id="searchInput" placeholder="Busca en español o inglés... ej: house, give up, trabajo" autocomplete="off">
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="all" onclick="setTab(this,'all')">Todo</button>
+  <button class="tab" data-tab="vocab" onclick="setTab(this,'vocab')">📚 Vocabulario</button>
+  <button class="tab" data-tab="phrasal" onclick="setTab(this,'phrasal')">🔗 Phrasal Verbs</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><strong>300</strong>Palabras</div>
+  <div class="stat"><strong>80</strong>Phrasal Verbs</div>
+  <div class="stat"><strong>A1–A2</strong>Nivel</div>
+  <div class="stat"><strong>🔊</strong>Audio incluido</div>
+</div>
+
+<div class="results-count" id="resultsCount"></div>
+<div class="grid" id="grid"></div>
+
+<footer>Hecho con ❤️ por <span>Lolo Basic English</span> · Para latinos en Canadá y México</footer>
+
+<script>
+const D = [
+  // FAMILIA
+  {t:'vocab',en:'mother',es:'madre / mamá',ex:'My mother is very kind. / Mi mamá es muy amable.'},
+  {t:'vocab',en:'father',es:'padre / papá',ex:'My father works every day. / Mi papá trabaja todos los días.'},
+  {t:'vocab',en:'brother',es:'hermano',ex:'I have one brother. / Tengo un hermano.'},
+  {t:'vocab',en:'sister',es:'hermana',ex:'She is my sister. / Ella es mi hermana.'},
+  {t:'vocab',en:'son',es:'hijo',ex:'My son is five years old. / Mi hijo tiene cinco años.'},
+  {t:'vocab',en:'daughter',es:'hija',ex:'She is my daughter. / Ella es mi hija.'},
+  {t:'vocab',en:'family',es:'familia',ex:'I love my family. / Amo a mi familia.'},
+  {t:'vocab',en:'grandmother',es:'abuela',ex:'My grandmother cooks very well. / Mi abuela cocina muy bien.'},
+  {t:'vocab',en:'grandfather',es:'abuelo',ex:'My grandfather is 80 years old. / Mi abuelo tiene 80 años.'},
+  {t:'vocab',en:'uncle',es:'tío',ex:'My uncle lives in Toronto. / Mi tío vive en Toronto.'},
+  {t:'vocab',en:'aunt',es:'tía',ex:'My aunt is a teacher. / Mi tía es maestra.'},
+  {t:'vocab',en:'cousin',es:'primo / prima',ex:'My cousin is funny. / Mi primo es chistoso.'},
+  {t:'vocab',en:'husband',es:'esposo / marido',ex:'My husband works at night. / Mi esposo trabaja de noche.'},
+  {t:'vocab',en:'wife',es:'esposa',ex:'His wife is from Mexico. / Su esposa es de México.'},
+  {t:'vocab',en:'baby',es:'bebé',ex:'The baby is sleeping. / El bebé está durmiendo.'},
+  // CASA
+  {t:'vocab',en:'house',es:'casa',ex:'I live in a small house. / Vivo en una casa pequeña.'},
+  {t:'vocab',en:'apartment',es:'apartamento / departamento',ex:'We rent an apartment. / Rentamos un departamento.'},
+  {t:'vocab',en:'room',es:'cuarto / habitación',ex:'My room is clean. / Mi cuarto está limpio.'},
+  {t:'vocab',en:'kitchen',es:'cocina',ex:'She is in the kitchen. / Ella está en la cocina.'},
+  {t:'vocab',en:'bathroom',es:'baño',ex:'The bathroom is upstairs. / El baño está arriba.'},
+  {t:'vocab',en:'bedroom',es:'recámara / dormitorio',ex:'I sleep in my bedroom. / Duermo en mi recámara.'},
+  {t:'vocab',en:'living room',es:'sala',ex:'We watch TV in the living room. / Vemos la tele en la sala.'},
+  {t:'vocab',en:'door',es:'puerta',ex:'Please close the door. / Por favor cierra la puerta.'},
+  {t:'vocab',en:'window',es:'ventana',ex:'Open the window please. / Abre la ventana por favor.'},
+  {t:'vocab',en:'table',es:'mesa',ex:'The food is on the table. / La comida está en la mesa.'},
+  {t:'vocab',en:'chair',es:'silla',ex:'Sit on the chair. / Siéntate en la silla.'},
+  {t:'vocab',en:'bed',es:'cama',ex:'I make my bed every morning. / Tiendo mi cama cada mañana.'},
+  {t:'vocab',en:'sofa',es:'sofá',ex:'The cat is on the sofa. / El gato está en el sofá.'},
+  {t:'vocab',en:'fridge',es:'refrigerador / refri',ex:'The water is in the fridge. / El agua está en el refri.'},
+  {t:'vocab',en:'stove',es:'estufa',ex:'Cook it on the stove. / Cocínalo en la estufa.'},
+  // TRABAJO
+  {t:'vocab',en:'job',es:'trabajo / empleo',ex:'I have a good job. / Tengo un buen trabajo.'},
+  {t:'vocab',en:'work',es:'trabajar',ex:'I work every day. / Trabajo todos los días.'},
+  {t:'vocab',en:'office',es:'oficina',ex:'She works in an office. / Ella trabaja en una oficina.'},
+  {t:'vocab',en:'boss',es:'jefe / jefa',ex:'My boss is strict. / Mi jefe es estricto.'},
+  {t:'vocab',en:'salary',es:'salario / sueldo',ex:'My salary is good. / Mi sueldo es bueno.'},
+  {t:'vocab',en:'employee',es:'empleado',ex:'He is a good employee. / Él es un buen empleado.'},
+  {t:'vocab',en:'company',es:'empresa / compañía',ex:'I work for a big company. / Trabajo para una empresa grande.'},
+  {t:'vocab',en:'meeting',es:'junta / reunión',ex:'We have a meeting at 3. / Tenemos una junta a las 3.'},
+  {t:'vocab',en:'schedule',es:'horario',ex:'My schedule is busy. / Mi horario está ocupado.'},
+  {t:'vocab',en:'break',es:'descanso / pausa',ex:'I take a break at noon. / Tomo un descanso al mediodía.'},
+  // COMIDA
+  {t:'vocab',en:'food',es:'comida',ex:'The food is delicious. / La comida está deliciosa.'},
+  {t:'vocab',en:'water',es:'agua',ex:'I drink water every day. / Tomo agua todos los días.'},
+  {t:'vocab',en:'bread',es:'pan',ex:'I want bread please. / Quiero pan por favor.'},
+  {t:'vocab',en:'rice',es:'arroz',ex:'I eat rice every day. / Como arroz todos los días.'},
+  {t:'vocab',en:'chicken',es:'pollo',ex:'I like chicken soup. / Me gusta la sopa de pollo.'},
+  {t:'vocab',en:'beef',es:'carne de res',ex:'I want beef tacos. / Quiero tacos de res.'},
+  {t:'vocab',en:'fish',es:'pescado',ex:'I eat fish on Fridays. / Como pescado los viernes.'},
+  {t:'vocab',en:'egg',es:'huevo',ex:'I want two eggs. / Quiero dos huevos.'},
+  {t:'vocab',en:'milk',es:'leche',ex:'I drink milk in the morning. / Tomo leche en la mañana.'},
+  {t:'vocab',en:'coffee',es:'café',ex:'I need coffee. / Necesito café.'},
+  {t:'vocab',en:'juice',es:'jugo',ex:'Orange juice please. / Jugo de naranja por favor.'},
+  {t:'vocab',en:'fruit',es:'fruta',ex:'I eat fruit every day. / Como fruta todos los días.'},
+  {t:'vocab',en:'vegetable',es:'verdura',ex:'Eat your vegetables. / Come tus verduras.'},
+  {t:'vocab',en:'apple',es:'manzana',ex:'I eat an apple every day. / Como una manzana todos los días.'},
+  {t:'vocab',en:'banana',es:'plátano',ex:'I want a banana. / Quiero un plátano.'},
+  {t:'vocab',en:'orange',es:'naranja',ex:'The orange is sweet. / La naranja está dulce.'},
+  {t:'vocab',en:'lunch',es:'comida / almuerzo',ex:'What do you want for lunch? / ¿Qué quieres de comida?'},
+  {t:'vocab',en:'dinner',es:'cena',ex:'Dinner is ready. / La cena está lista.'},
+  {t:'vocab',en:'breakfast',es:'desayuno',ex:'I skip breakfast sometimes. / A veces no desayuno.'},
+  {t:'vocab',en:'restaurant',es:'restaurante',ex:'Let\'s go to a restaurant. / Vamos a un restaurante.'},
+  // CIUDAD
+  {t:'vocab',en:'city',es:'ciudad',ex:'I live in a big city. / Vivo en una ciudad grande.'},
+  {t:'vocab',en:'street',es:'calle',ex:'Cross the street carefully. / Cruza la calle con cuidado.'},
+  {t:'vocab',en:'store',es:'tienda',ex:'The store is open. / La tienda está abierta.'},
+  {t:'vocab',en:'supermarket',es:'supermercado',ex:'I go to the supermarket on Saturdays. / Voy al súper los sábados.'},
+  {t:'vocab',en:'hospital',es:'hospital',ex:'The hospital is near. / El hospital está cerca.'},
+  {t:'vocab',en:'school',es:'escuela',ex:'My son goes to school. / Mi hijo va a la escuela.'},
+  {t:'vocab',en:'bank',es:'banco',ex:'I need to go to the bank. / Necesito ir al banco.'},
+  {t:'vocab',en:'park',es:'parque',ex:'We play in the park. / Jugamos en el parque.'},
+  {t:'vocab',en:'airport',es:'aeropuerto',ex:'The airport is far. / El aeropuerto está lejos.'},
+  {t:'vocab',en:'bus stop',es:'parada de autobús',ex:'Wait at the bus stop. / Espera en la parada.'},
+  {t:'vocab',en:'pharmacy',es:'farmacia',ex:'The pharmacy is on the corner. / La farmacia está en la esquina.'},
+  {t:'vocab',en:'church',es:'iglesia',ex:'We go to church on Sundays. / Vamos a la iglesia los domingos.'},
+  {t:'vocab',en:'hotel',es:'hotel',ex:'We stay at a hotel. / Nos quedamos en un hotel.'},
+  {t:'vocab',en:'library',es:'biblioteca',ex:'I study at the library. / Estudio en la biblioteca.'},
+  // TRANSPORTE
+  {t:'vocab',en:'car',es:'carro / coche',ex:'I drive my car to work. / Manejo mi carro al trabajo.'},
+  {t:'vocab',en:'bus',es:'autobús / camión',ex:'I take the bus every day. / Tomo el camión todos los días.'},
+  {t:'vocab',en:'train',es:'tren',ex:'The train is fast. / El tren es rápido.'},
+  {t:'vocab',en:'bike',es:'bicicleta',ex:'I ride my bike on weekends. / Ando en bici los fines de semana.'},
+  {t:'vocab',en:'truck',es:'camioneta / camión',ex:'He drives a big truck. / Él maneja un camión grande.'},
+  {t:'vocab',en:'taxi',es:'taxi',ex:'Let\'s take a taxi. / Tomemos un taxi.'},
+  {t:'vocab',en:'driver',es:'conductor / chofer',ex:'He is a good driver. / Él es un buen chofer.'},
+  {t:'vocab',en:'traffic',es:'tráfico / tránsito',ex:'There is a lot of traffic. / Hay mucho tráfico.'},
+  {t:'vocab',en:'road',es:'carretera / camino',ex:'The road is long. / La carretera es larga.'},
+  {t:'vocab',en:'gas station',es:'gasolinera',ex:'Fill up at the gas station. / Llena en la gasolinera.'},
+  // CLIMA
+  {t:'vocab',en:'weather',es:'clima / tiempo',ex:'The weather is cold today. / El clima está frío hoy.'},
+  {t:'vocab',en:'rain',es:'lluvia / llover',ex:'It rains a lot here. / Aquí llueve mucho.'},
+  {t:'vocab',en:'snow',es:'nieve / nevar',ex:'It snows in winter. / Nieva en invierno.'},
+  {t:'vocab',en:'sun',es:'sol',ex:'The sun is bright today. / El sol está fuerte hoy.'},
+  {t:'vocab',en:'wind',es:'viento',ex:'The wind is cold. / El viento está frío.'},
+  {t:'vocab',en:'hot',es:'caliente / caluroso',ex:'It\'s very hot today. / Hace mucho calor hoy.'},
+  {t:'vocab',en:'cold',es:'frío',ex:'It\'s cold outside. / Afuera está frío.'},
+  {t:'vocab',en:'cloudy',es:'nublado',ex:'It\'s cloudy today. / Hoy está nublado.'},
+  {t:'vocab',en:'temperature',es:'temperatura',ex:'The temperature is -10. / La temperatura es -10.'},
+  {t:'vocab',en:'season',es:'estación del año',ex:'Winter is my favorite season. / El invierno es mi estación favorita.'},
+  // ROPA
+  {t:'vocab',en:'shirt',es:'camisa / playera',ex:'I wear a blue shirt. / Traigo una camisa azul.'},
+  {t:'vocab',en:'pants',es:'pantalón',ex:'These pants are too big. / Estos pantalones me quedan grandes.'},
+  {t:'vocab',en:'shoes',es:'zapatos',ex:'I need new shoes. / Necesito zapatos nuevos.'},
+  {t:'vocab',en:'jacket',es:'chaqueta / chamarra',ex:'Wear your jacket, it\'s cold. / Ponte tu chamarra, hace frío.'},
+  {t:'vocab',en:'hat',es:'gorro / sombrero',ex:'I wear a hat in winter. / Me pongo gorro en invierno.'},
+  {t:'vocab',en:'dress',es:'vestido',ex:'She wears a red dress. / Ella trae un vestido rojo.'},
+  {t:'vocab',en:'coat',es:'abrigo',ex:'I need a warm coat. / Necesito un abrigo calientito.'},
+  {t:'vocab',en:'socks',es:'calcetines',ex:'I lost one sock. / Perdí un calcetín.'},
+  {t:'vocab',en:'gloves',es:'guantes',ex:'Wear gloves in the snow. / Usa guantes en la nieve.'},
+  {t:'vocab',en:'boots',es:'botas',ex:'I wear boots in winter. / Me pongo botas en invierno.'},
+  // VERBOS
+  {t:'vocab',en:'to be',es:'ser / estar',ex:'I am happy. / Estoy feliz.'},
+  {t:'vocab',en:'to have',es:'tener',ex:'I have a question. / Tengo una pregunta.'},
+  {t:'vocab',en:'to want',es:'querer',ex:'I want coffee. / Quiero café.'},
+  {t:'vocab',en:'to need',es:'necesitar',ex:'I need help. / Necesito ayuda.'},
+  {t:'vocab',en:'to eat',es:'comer',ex:'I eat at noon. / Como al mediodía.'},
+  {t:'vocab',en:'to drink',es:'tomar / beber',ex:'I drink coffee every morning. / Tomo café cada mañana.'},
+  {t:'vocab',en:'to go',es:'ir',ex:'I go to work at 6 AM. / Voy al trabajo a las 6 AM.'},
+  {t:'vocab',en:'to come',es:'venir',ex:'Come here please. / Ven aquí por favor.'},
+  {t:'vocab',en:'to live',es:'vivir',ex:'I live in Leamington. / Vivo en Leamington.'},
+  {t:'vocab',en:'to work',es:'trabajar',ex:'I work in a greenhouse. / Trabajo en un invernadero.'},
+  {t:'vocab',en:'to speak',es:'hablar',ex:'I speak Spanish. / Hablo español.'},
+  {t:'vocab',en:'to understand',es:'entender',ex:'I don\'t understand. / No entiendo.'},
+  {t:'vocab',en:'to listen',es:'escuchar',ex:'Listen carefully. / Escucha con atención.'},
+  {t:'vocab',en:'to read',es:'leer',ex:'I read every night. / Leo cada noche.'},
+  {t:'vocab',en:'to write',es:'escribir',ex:'Write your name here. / Escribe tu nombre aquí.'},
+  {t:'vocab',en:'to buy',es:'comprar',ex:'I want to buy a car. / Quiero comprar un carro.'},
+  {t:'vocab',en:'to pay',es:'pagar',ex:'How do I pay? / ¿Cómo pago?'},
+  {t:'vocab',en:'to help',es:'ayudar',ex:'Can you help me? / ¿Me puedes ayudar?'},
+  {t:'vocab',en:'to know',es:'saber / conocer',ex:'I don\'t know. / No sé.'},
+  {t:'vocab',en:'to think',es:'pensar / creer',ex:'I think it\'s good. / Creo que está bien.'},
+  {t:'vocab',en:'to sleep',es:'dormir',ex:'I sleep 6 hours. / Duermo 6 horas.'},
+  {t:'vocab',en:'to drive',es:'manejar / conducir',ex:'I drive to work. / Manejo al trabajo.'},
+  {t:'vocab',en:'to call',es:'llamar',ex:'Call me please. / Llámame por favor.'},
+  {t:'vocab',en:'to send',es:'enviar / mandar',ex:'Send me a message. / Mándame un mensaje.'},
+  {t:'vocab',en:'to open',es:'abrir',ex:'Open the door. / Abre la puerta.'},
+  {t:'vocab',en:'to close',es:'cerrar',ex:'Close the window. / Cierra la ventana.'},
+  {t:'vocab',en:'to wait',es:'esperar',ex:'Wait a moment. / Espera un momento.'},
+  {t:'vocab',en:'to ask',es:'preguntar / pedir',ex:'Can I ask a question? / ¿Puedo hacer una pregunta?'},
+  {t:'vocab',en:'to answer',es:'contestar / responder',ex:'Answer the phone. / Contesta el teléfono.'},
+  // TIEMPO
+  {t:'vocab',en:'today',es:'hoy',ex:'Today is Monday. / Hoy es lunes.'},
+  {t:'vocab',en:'tomorrow',es:'mañana (día siguiente)',ex:'See you tomorrow. / Nos vemos mañana.'},
+  {t:'vocab',en:'yesterday',es:'ayer',ex:'I worked yesterday. / Ayer trabajé.'},
+  {t:'vocab',en:'now',es:'ahora',ex:'Come now please. / Ven ahora por favor.'},
+  {t:'vocab',en:'later',es:'después / más tarde',ex:'I\'ll call you later. / Te llamo más tarde.'},
+  {t:'vocab',en:'early',es:'temprano',ex:'Wake up early. / Levántate temprano.'},
+  {t:'vocab',en:'late',es:'tarde',ex:'Don\'t be late. / No llegues tarde.'},
+  {t:'vocab',en:'week',es:'semana',ex:'I work five days a week. / Trabajo cinco días a la semana.'},
+  {t:'vocab',en:'month',es:'mes',ex:'I pay rent every month. / Pago renta cada mes.'},
+  {t:'vocab',en:'year',es:'año',ex:'I\'ve been here for one year. / Llevo un año aquí.'},
+  {t:'vocab',en:'hour',es:'hora',ex:'I work 10 hours a day. / Trabajo 10 horas al día.'},
+  {t:'vocab',en:'minute',es:'minuto',ex:'Wait five minutes. / Espera cinco minutos.'},
+  {t:'vocab',en:'morning',es:'mañana (tiempo)',ex:'Good morning! / ¡Buenos días!'},
+  {t:'vocab',en:'afternoon',es:'tarde',ex:'Good afternoon! / ¡Buenas tardes!'},
+  {t:'vocab',en:'night',es:'noche',ex:'Good night! / ¡Buenas noches!'},
+  // ADJETIVOS
+  {t:'vocab',en:'big',es:'grande',ex:'It\'s a big city. / Es una ciudad grande.'},
+  {t:'vocab',en:'small',es:'pequeño / chico',ex:'My apartment is small. / Mi departamento es pequeño.'},
+  {t:'vocab',en:'good',es:'bueno',ex:'The food is good. / La comida está buena.'},
+  {t:'vocab',en:'bad',es:'malo',ex:'The weather is bad. / El clima está malo.'},
+  {t:'vocab',en:'new',es:'nuevo',ex:'I have a new job. / Tengo un trabajo nuevo.'},
+  {t:'vocab',en:'old',es:'viejo / antiguo',ex:'This car is old. / Este carro está viejo.'},
+  {t:'vocab',en:'fast',es:'rápido',ex:'Drive fast, we\'re late. / Maneja rápido, llegamos tarde.'},
+  {t:'vocab',en:'slow',es:'lento',ex:'The internet is slow. / El internet está lento.'},
+  {t:'vocab',en:'easy',es:'fácil',ex:'English is easy with practice. / El inglés es fácil con práctica.'},
+  {t:'vocab',en:'difficult',es:'difícil',ex:'The test was difficult. / El examen estuvo difícil.'},
+  {t:'vocab',en:'expensive',es:'caro',ex:'The rent is expensive. / La renta está cara.'},
+  {t:'vocab',en:'cheap',es:'barato',ex:'This store is cheap. / Esta tienda es barata.'},
+  {t:'vocab',en:'clean',es:'limpio',ex:'Keep it clean. / Mantenlo limpio.'},
+  {t:'vocab',en:'dirty',es:'sucio',ex:'My hands are dirty. / Mis manos están sucias.'},
+  {t:'vocab',en:'happy',es:'feliz / contento',ex:'I\'m happy today. / Hoy estoy feliz.'},
+  {t:'vocab',en:'tired',es:'cansado',ex:'I\'m very tired. / Estoy muy cansado.'},
+  {t:'vocab',en:'sick',es:'enfermo',ex:'I\'m sick today. / Hoy estoy enfermo.'},
+  {t:'vocab',en:'hungry',es:'con hambre',ex:'I\'m so hungry. / Tengo mucha hambre.'},
+  {t:'vocab',en:'thirsty',es:'con sed',ex:'I\'m thirsty. / Tengo sed.'},
+  {t:'vocab',en:'busy',es:'ocupado',ex:'I\'m busy right now. / Ahorita estoy ocupado.'},
+  // FRASES ÚTILES
+  {t:'vocab',en:'please',es:'por favor',ex:'Pass the salt please. / Pasa la sal por favor.'},
+  {t:'vocab',en:'thank you',es:'gracias',ex:'Thank you very much. / Muchas gracias.'},
+  {t:'vocab',en:'sorry',es:'lo siento / perdón',ex:'Sorry I\'m late. / Perdón por llegar tarde.'},
+  {t:'vocab',en:'excuse me',es:'disculpe / con permiso',ex:'Excuse me, where is the bank? / Disculpe, ¿dónde está el banco?'},
+  {t:'vocab',en:'help',es:'ayuda',ex:'Help me please. / Ayúdame por favor.'},
+  {t:'vocab',en:'important',es:'importante',ex:'This is very important. / Esto es muy importante.'},
+  {t:'vocab',en:'problem',es:'problema',ex:'There is a problem. / Hay un problema.'},
+  {t:'vocab',en:'money',es:'dinero',ex:'I need more money. / Necesito más dinero.'},
+  {t:'vocab',en:'price',es:'precio',ex:'What\'s the price? / ¿Cuál es el precio?'},
+  {t:'vocab',en:'number',es:'número',ex:'What\'s your number? / ¿Cuál es tu número?'},
+  {t:'vocab',en:'name',es:'nombre',ex:'My name is Dany. / Mi nombre es Dany.'},
+  {t:'vocab',en:'address',es:'dirección',ex:'What\'s your address? / ¿Cuál es tu dirección?'},
+  {t:'vocab',en:'phone',es:'teléfono / celular',ex:'Call my phone. / Llama a mi teléfono.'},
+  {t:'vocab',en:'message',es:'mensaje',ex:'Send me a message. / Mándame un mensaje.'},
+  {t:'vocab',en:'appointment',es:'cita',ex:'I have an appointment. / Tengo una cita.'},
+  {t:'vocab',en:'document',es:'documento',ex:'I need that document. / Necesito ese documento.'},
+  {t:'vocab',en:'password',es:'contraseña',ex:'Enter your password. / Ingresa tu contraseña.'},
+  // SALUD
+  {t:'vocab',en:'doctor',es:'doctor / médico',ex:'I need to see a doctor. / Necesito ver a un doctor.'},
+  {t:'vocab',en:'medicine',es:'medicina',ex:'Take your medicine. / Toma tu medicina.'},
+  {t:'vocab',en:'pain',es:'dolor',ex:'I have pain in my back. / Tengo dolor de espalda.'},
+  {t:'vocab',en:'headache',es:'dolor de cabeza',ex:'I have a headache. / Tengo dolor de cabeza.'},
+  {t:'vocab',en:'fever',es:'fiebre',ex:'My son has a fever. / Mi hijo tiene fiebre.'},
+  {t:'vocab',en:'cough',es:'tos',ex:'I have a bad cough. / Tengo mucha tos.'},
+  {t:'vocab',en:'insurance',es:'seguro médico',ex:'Do you have insurance? / ¿Tienes seguro?'},
+  {t:'vocab',en:'emergency',es:'emergencia',ex:'This is an emergency. / Esto es una emergencia.'},
+  // COLORES
+  {t:'vocab',en:'red',es:'rojo',ex:'The apple is red. / La manzana es roja.'},
+  {t:'vocab',en:'blue',es:'azul',ex:'The sky is blue. / El cielo es azul.'},
+  {t:'vocab',en:'green',es:'verde',ex:'The grass is green. / El pasto es verde.'},
+  {t:'vocab',en:'yellow',es:'amarillo',ex:'Bananas are yellow. / Los plátanos son amarillos.'},
+  {t:'vocab',en:'black',es:'negro',ex:'My jacket is black. / Mi chamarra es negra.'},
+  {t:'vocab',en:'white',es:'blanco',ex:'The snow is white. / La nieve es blanca.'},
+  {t:'vocab',en:'gray',es:'gris',ex:'The sky is gray today. / El cielo está gris hoy.'},
+  {t:'vocab',en:'brown',es:'café / marrón',ex:'I have brown eyes. / Tengo ojos cafés.'},
+  {t:'vocab',en:'pink',es:'rosa',ex:'Her shirt is pink. / Su camisa es rosa.'},
+  // ESCUELA
+  {t:'vocab',en:'student',es:'estudiante / alumno',ex:'I am a student. / Soy estudiante.'},
+  {t:'vocab',en:'teacher',es:'maestro / profesor',ex:'The teacher is nice. / El maestro es buena onda.'},
+  {t:'vocab',en:'class',es:'clase',ex:'The class starts at 8. / La clase empieza a las 8.'},
+  {t:'vocab',en:'homework',es:'tarea',ex:'Do your homework. / Haz tu tarea.'},
+  {t:'vocab',en:'test',es:'examen',ex:'I have a test tomorrow. / Mañana tengo examen.'},
+  {t:'vocab',en:'grade',es:'calificación',ex:'I got a good grade. / Saqué buena calificación.'},
+  {t:'vocab',en:'English',es:'inglés',ex:'I study English. / Estudio inglés.'},
+  {t:'vocab',en:'Spanish',es:'español',ex:'I speak Spanish. / Hablo español.'},
+  {t:'vocab',en:'language',es:'idioma',ex:'Spanish is my language. / El español es mi idioma.'},
+  {t:'vocab',en:'practice',es:'práctica',ex:'Practice every day. / Practica todos los días.'},
+  // TECNOLOGÍA
+  {t:'vocab',en:'computer',es:'computadora',ex:'I use the computer at work. / Uso la computadora en el trabajo.'},
+  {t:'vocab',en:'internet',es:'internet',ex:'The internet is slow today. / El internet está lento hoy.'},
+  {t:'vocab',en:'app',es:'aplicación / app',ex:'Download the app. / Descarga la app.'},
+  {t:'vocab',en:'email',es:'correo electrónico',ex:'Send me an email. / Mándame un correo.'},
+  {t:'vocab',en:'social media',es:'redes sociales',ex:'I use social media every day. / Uso las redes todos los días.'},
+  {t:'vocab',en:'video',es:'video',ex:'Watch this video. / Mira este video.'},
+  {t:'vocab',en:'camera',es:'cámara',ex:'Take a photo. / Toma una foto.'},
+  {t:'vocab',en:'battery',es:'batería',ex:'My battery is low. / Me queda poca batería.'},
+
+  // ===== PHRASAL VERBS =====
+  {t:'phrasal',en:'give up',es:'rendirse / darse por vencido',ex:'Don\'t give up! / ¡No te rindas!'},
+  {t:'phrasal',en:'look for',es:'buscar',ex:'I\'m looking for a job. / Estoy buscando trabajo.'},
+  {t:'phrasal',en:'look up',es:'buscar (en internet)',ex:'Look it up on Google. / Búscalo en Google.'},
+  {t:'phrasal',en:'look after',es:'cuidar a alguien',ex:'I look after my son. / Cuido a mi hijo.'},
+  {t:'phrasal',en:'look forward to',es:'tener ganas de algo',ex:'I look forward to the weekend. / Espero con ganas el fin de semana.'},
+  {t:'phrasal',en:'turn on',es:'encender / prender',ex:'Turn on the lights. / Prende las luces.'},
+  {t:'phrasal',en:'turn off',es:'apagar',ex:'Turn off the TV. / Apaga la tele.'},
+  {t:'phrasal',en:'turn up',es:'subir el volumen',ex:'Turn up the music! / ¡Sube la música!'},
+  {t:'phrasal',en:'turn down',es:'bajar el volumen / rechazar',ex:'Turn down the TV please. / Baja la tele por favor.'},
+  {t:'phrasal',en:'pick up',es:'recoger / levantar',ex:'Pick up the kids at 3. / Recoge a los niños a las 3.'},
+  {t:'phrasal',en:'drop off',es:'dejar a alguien en un lugar',ex:'Drop me off here. / Déjame aquí.'},
+  {t:'phrasal',en:'get up',es:'levantarse',ex:'I get up at 5 AM. / Me levanto a las 5 AM.'},
+  {t:'phrasal',en:'wake up',es:'despertarse',ex:'Wake up! It\'s late. / ¡Despiértate! Es tarde.'},
+  {t:'phrasal',en:'get on',es:'subirse a un transporte',ex:'Get on the bus. / Súbete al camión.'},
+  {t:'phrasal',en:'get off',es:'bajarse de un transporte',ex:'Get off at the next stop. / Bájate en la próxima parada.'},
+  {t:'phrasal',en:'get in',es:'subirse a un carro',ex:'Get in the car. / Métete al carro.'},
+  {t:'phrasal',en:'get out',es:'bajarse de un carro / salir',ex:'Get out of the car. / Bájate del carro.'},
+  {t:'phrasal',en:'get back',es:'regresar / volver',ex:'I get back home at 8. / Regreso a casa a las 8.'},
+  {t:'phrasal',en:'get along',es:'llevarse bien',ex:'We get along very well. / Nos llevamos muy bien.'},
+  {t:'phrasal',en:'get over',es:'superar algo',ex:'Get over it. / Supéralo.'},
+  {t:'phrasal',en:'find out',es:'descubrir / enterarse',ex:'I found out today. / Me enteré hoy.'},
+  {t:'phrasal',en:'figure out',es:'entender / resolver',ex:'I can\'t figure it out. / No lo puedo resolver.'},
+  {t:'phrasal',en:'run out of',es:'quedarse sin algo',ex:'We ran out of milk. / Se nos acabó la leche.'},
+  {t:'phrasal',en:'run into',es:'toparse con alguien',ex:'I ran into my boss. / Me topé con mi jefe.'},
+  {t:'phrasal',en:'carry on',es:'continuar',ex:'Carry on with your work. / Continúa con tu trabajo.'},
+  {t:'phrasal',en:'go on',es:'continuar / seguir',ex:'Go on, I\'m listening. / Sigue, te escucho.'},
+  {t:'phrasal',en:'go out',es:'salir a divertirse',ex:'Let\'s go out tonight. / Salgamos esta noche.'},
+  {t:'phrasal',en:'go back',es:'regresar',ex:'I want to go back to Mexico. / Quiero regresar a México.'},
+  {t:'phrasal',en:'go ahead',es:'adelante / proceder',ex:'Go ahead, it\'s your turn. / Adelante, es tu turno.'},
+  {t:'phrasal',en:'come back',es:'regresar / volver',ex:'Come back soon. / Regresa pronto.'},
+  {t:'phrasal',en:'come in',es:'entrar / pasar',ex:'Come in please. / Pasa por favor.'},
+  {t:'phrasal',en:'come on',es:'ándale / vamos',ex:'Come on, we\'re late! / ¡Ándale, llegamos tarde!'},
+  {t:'phrasal',en:'come up with',es:'ocurrírsele una idea',ex:'I came up with a good idea. / Se me ocurrió una buena idea.'},
+  {t:'phrasal',en:'put on',es:'ponerse ropa',ex:'Put on your jacket. / Ponte tu chamarra.'},
+  {t:'phrasal',en:'take off',es:'quitarse ropa / despegar',ex:'Take off your shoes. / Quítate los zapatos.'},
+  {t:'phrasal',en:'take out',es:'sacar',ex:'Take out the trash. / Saca la basura.'},
+  {t:'phrasal',en:'take care of',es:'cuidar',ex:'Take care of yourself. / Cuídate.'},
+  {t:'phrasal',en:'put away',es:'guardar / ordenar',ex:'Put away your things. / Guarda tus cosas.'},
+  {t:'phrasal',en:'put off',es:'posponer',ex:'Don\'t put it off. / No lo pospongas.'},
+  {t:'phrasal',en:'put up with',es:'aguantar / tolerar',ex:'I can\'t put up with this. / No aguanto esto.'},
+  {t:'phrasal',en:'set up',es:'configurar / establecer',ex:'Set up your account. / Configura tu cuenta.'},
+  {t:'phrasal',en:'set off',es:'salir de viaje',ex:'We set off at 6 AM. / Salimos a las 6 AM.'},
+  {t:'phrasal',en:'show up',es:'aparecer / llegar',ex:'He didn\'t show up. / No apareció.'},
+  {t:'phrasal',en:'show off',es:'presumir',ex:'Stop showing off. / Deja de presumir.'},
+  {t:'phrasal',en:'call back',es:'devolver la llamada',ex:'I\'ll call you back. / Te regreso la llamada.'},
+  {t:'phrasal',en:'call off',es:'cancelar',ex:'They called off the game. / Cancelaron el partido.'},
+  {t:'phrasal',en:'hang up',es:'colgar el teléfono',ex:'Don\'t hang up! / ¡No cuelgues!'},
+  {t:'phrasal',en:'hang out',es:'pasar el rato / juntarse',ex:'Let\'s hang out this weekend. / Juntémonos este fin de semana.'},
+  {t:'phrasal',en:'work out',es:'hacer ejercicio / funcionar',ex:'I work out three times a week. / Hago ejercicio tres veces por semana.'},
+  {t:'phrasal',en:'fill in',es:'llenar un formulario',ex:'Fill in this form. / Llena este formulario.'},
+  {t:'phrasal',en:'fill up',es:'llenar completamente',ex:'Fill up the gas tank. / Llena el tanque.'},
+  {t:'phrasal',en:'break down',es:'descomponerse',ex:'My car broke down. / Se descompuso mi carro.'},
+  {t:'phrasal',en:'break up',es:'terminar una relación',ex:'They broke up last month. / Terminaron el mes pasado.'},
+  {t:'phrasal',en:'bring up',es:'mencionar / criar',ex:'He brought up a good point. / Mencionó algo importante.'},
+  {t:'phrasal',en:'bring back',es:'traer de vuelta',ex:'Bring back some food. / Trae de regreso comida.'},
+  {t:'phrasal',en:'eat out',es:'comer fuera de casa',ex:'Let\'s eat out tonight. / Comamos fuera esta noche.'},
+  {t:'phrasal',en:'sit down',es:'sentarse',ex:'Please sit down. / Por favor siéntate.'},
+  {t:'phrasal',en:'stand up',es:'ponerse de pie',ex:'Stand up please. / Párate por favor.'},
+  {t:'phrasal',en:'throw away',es:'tirar a la basura',ex:'Throw away the trash. / Tira la basura.'},
+  {t:'phrasal',en:'throw up',es:'vomitar',ex:'I feel like throwing up. / Siento que voy a vomitar.'},
+  {t:'phrasal',en:'pay back',es:'devolver el dinero',ex:'I\'ll pay you back. / Te pago de regreso.'},
+  {t:'phrasal',en:'pay off',es:'valer la pena',ex:'Hard work pays off. / El trabajo duro vale la pena.'},
+  {t:'phrasal',en:'check in',es:'registrarse (hotel/vuelo)',ex:'Check in before 3 PM. / Regístrate antes de las 3 PM.'},
+  {t:'phrasal',en:'check out',es:'hacer check out / ver algo',ex:'Check out this video! / ¡Mira este video!'},
+  {t:'phrasal',en:'sign up',es:'registrarse',ex:'Sign up for free. / Regístrate gratis.'},
+  {t:'phrasal',en:'log in',es:'iniciar sesión',ex:'Log in to your account. / Inicia sesión.'},
+  {t:'phrasal',en:'log out',es:'cerrar sesión',ex:'Don\'t forget to log out. / No olvides cerrar sesión.'},
+  {t:'phrasal',en:'save up',es:'ahorrar dinero',ex:'I\'m saving up for a car. / Estoy ahorrando para un carro.'},
+  {t:'phrasal',en:'end up',es:'terminar / acabar en un lugar',ex:'I ended up working late. / Terminé trabajando tarde.'},
+  {t:'phrasal',en:'keep on',es:'seguir / continuar',ex:'Keep on practicing. / Sigue practicando.'},
+  {t:'phrasal',en:'keep up',es:'mantener el ritmo',ex:'Keep up the good work. / Sigue con el buen trabajo.'},
+  {t:'phrasal',en:'move on',es:'seguir adelante',ex:'It\'s time to move on. / Es hora de seguir adelante.'},
+  {t:'phrasal',en:'move in',es:'mudarse a un lugar',ex:'We moved in last week. / Nos mudamos la semana pasada.'},
+  {t:'phrasal',en:'move out',es:'mudarse de un lugar',ex:'They moved out yesterday. / Se mudaron ayer.'},
+  {t:'phrasal',en:'hold on',es:'esperar / aguantar',ex:'Hold on a second. / Espera un segundo.'},
+  {t:'phrasal',en:'give back',es:'devolver algo',ex:'Give back my pen. / Devuélveme mi pluma.'},
+  {t:'phrasal',en:'give out',es:'repartir',ex:'Give out the papers. / Reparte los papeles.'},
+  {t:'phrasal',en:'point out',es:'señalar / indicar',ex:'She pointed out the mistake. / Ella señaló el error.'},
+  {t:'phrasal',en:'try on',es:'probarse ropa',ex:'Try on this shirt. / Pruébate esta camisa.'},
+  {t:'phrasal',en:'try out',es:'probar algo nuevo',ex:'Try out the new app. / Prueba la nueva app.'},
+];
+
+let tab = 'all';
+
+function setTab(el, val) {
+  tab = val;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function speak(txt, e) {
+  e.stopPropagation();
+  const u = new SpeechSynthesisUtterance(txt);
+  u.lang = 'en-US'; u.rate = 0.85;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function toggle(el) { el.classList.toggle('open'); }
+
+function render() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const filtered = D.filter(item => {
+    const matchTab = tab === 'all' || item.t === tab;
+    const matchQ = !q || item.en.toLowerCase().includes(q) || item.es.toLowerCase().includes(q);
+    return matchTab && matchQ;
+  });
+
+  document.getElementById('resultsCount').textContent =
+    filtered.length > 0 ? `${filtered.length} resultado${filtered.length !== 1 ? 's' : ''}` : '';
+
+  const grid = document.getElementById('grid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><p>No encontramos "${q}"</p><p style="margin-top:8px;font-size:.75rem">Intenta en español o en inglés</p></div>`;
+    return;
+  }
+
+  const sorted = [...filtered].sort((a,b) => a.en.localeCompare(b.en));
+  let html = '', lastLetter = '';
+
+  sorted.forEach(item => {
+    const letter = item.en[0].toUpperCase();
+    if (!q && letter !== lastLetter) {
+      lastLetter = letter;
+      html += `<div class="letter-div">${letter}</div>`;
+    }
+    const safe = item.en.replace(/'/g,"\\'");
+    html += `
+      <div class="card ${item.t==='phrasal'?'phrasal':''}" onclick="toggle(this)">
+        <div class="card-tag ${item.t==='vocab'?'v':'p'}">${item.t==='phrasal'?'🔗 Phrasal Verb':'📚 Vocabulario'}</div>
+        <div class="card-en">${item.en}</div>
+        <div class="card-es">${item.es}</div>
+        <button class="speak-btn" onclick="speak('${safe}',event)" title="Escuchar">🔊</button>
+        <div class="card-ex">${item.ex}</div>
+      </div>`;
+  });
+
+  grid.innerHTML = html;
+}
+
+document.getElementById('searchInput').addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
