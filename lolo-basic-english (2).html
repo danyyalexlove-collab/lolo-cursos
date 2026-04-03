@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lolo Basic English — El inglés que nos faltaba</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fire: #FF6B35;
+  --fire-dark: #C73A08;
+  --fire-deep: #E8450A;
+  --gold: #FFE066;
+  --gold-dark: #FFB347;
+  --white: #ffffff;
+  --off-white: #FFF8F4;
+  --dark: #1A0A00;
+  --text: #3D1500;
+  --muted: #8B5A3A;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--off-white);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(255,248,244,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,107,53,0.15);
+}
+
+.nav-logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.6rem;
+  color: var(--fire-dark);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.nav-badge {
+  background: var(--gold);
+  color: var(--fire-dark);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.nav-cta {
+  background: var(--fire-deep);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(232,69,10,0.35);
+}
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(232,69,10,0.45); }
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 7rem 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #FFF8F4 0%, #FFE8D6 60%, #FFD4B0 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute; top: -120px; right: -120px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,53,0.18) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.hero::after {
+  content: '';
+  position: absolute; bottom: -100px; left: -100px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,179,71,0.2) 0%, transparent 70%);
+  animation: pulse 5s ease-in-out infinite reverse;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.7; }
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--fire-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+  z-index: 1;
+  animation: fadeUp 0.6s ease both;
+}
+
+.hero-logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: clamp(4rem, 12vw, 8rem);
+  line-height: 1;
+  color: var(--fire-dark);
+  z-index: 1;
+  animation: fadeUp 0.7s ease both;
+  animation-delay: 0.1s;
+}
+
+.hero-logo span {
+  color: var(--fire);
+}
+
+.hero-sub {
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  z-index: 1;
+  animation: fadeUp 0.7s ease both;
+  animation-delay: 0.15s;
+}
+
+.hero-headline {
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--dark);
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+  max-width: 700px;
+  z-index: 1;
+  animation: fadeUp 0.8s ease both;
+  animation-delay: 0.2s;
+}
+
+.hero-headline em {
+  font-style: italic;
+  color: var(--fire);
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  z-index: 1;
+  animation: fadeUp 0.8s ease both;
+  animation-delay: 0.3s;
+}
+
+.hero-bilingual {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: -1.5rem;
+  margin-bottom: 2.2rem;
+  z-index: 1;
+  animation: fadeUp 0.8s ease both;
+  animation-delay: 0.35s;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--fire-deep), var(--fire));
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 18px 48px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 8px 28px rgba(232,69,10,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 1;
+  animation: fadeUp 0.9s ease both;
+  animation-delay: 0.4s;
+}
+.btn-primary:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 36px rgba(232,69,10,0.5); }
+
+.btn-sub {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--muted);
+  margin-top: 0.8rem;
+  z-index: 1;
+  animation: fadeUp 1s ease both;
+  animation-delay: 0.5s;
+}
+
+/* STATS ROW */
+.stats {
+  display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;
+  margin-top: 3.5rem;
+  z-index: 1;
+  animation: fadeUp 1s ease both;
+  animation-delay: 0.55s;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Fredoka One', cursive;
+  font-size: 2.2rem;
+  color: var(--fire-dark);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== SECCIÓN: QUÉ INCLUYE ===== */
+.section {
+  padding: 5rem 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.section-tag {
+  display: inline-block;
+  background: rgba(255,107,53,0.12);
+  color: var(--fire-dark);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--dark);
+  margin-bottom: 0.8rem;
+}
+
+.section-title span { color: var(--fire); }
+
+.section-desc {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+/* CARDS DE CONTENIDO */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 2rem;
+  border: 1.5px solid rgba(255,107,53,0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(232,69,10,0.12); }
+
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--fire-deep), var(--gold-dark));
+}
+
+.card-icon {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.card-title-en {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--fire);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.card-desc {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ===== SECCIÓN PRECIO ===== */
+.pricing-section {
+  background: linear-gradient(135deg, var(--fire-deep) 0%, var(--fire) 50%, var(--gold-dark) 100%);
+  padding: 5rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-section::before {
+  content: '';
+  position: absolute; top: -80px; right: -80px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+}
+
+.pricing-section::after {
+  content: '';
+  position: absolute; bottom: -100px; left: -60px;
+  width: 350px; height: 350px; border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+
+.pricing-tag {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--fire-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 999px;
+  margin-bottom: 1.2rem;
+  z-index: 1; position: relative;
+}
+
+.pricing-title {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  z-index: 1; position: relative;
+}
+
+.pricing-sub {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 2.5rem;
+  font-style: italic;
+  z-index: 1; position: relative;
+}
+
+.price-box {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 2.5rem 3.5rem;
+  margin-bottom: 2rem;
+  z-index: 1; position: relative;
+  backdrop-filter: blur(8px);
+}
+
+.price-amount {
+  font-family: 'Fredoka One', cursive;
+  font-size: 4rem;
+  color: #fff;
+  line-height: 1;
+}
+
+.price-currency {
+  font-size: 1.5rem;
+  vertical-align: top;
+  margin-top: 0.6rem;
+  display: inline-block;
+}
+
+.price-period {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+
+.price-includes {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  margin-bottom: 2.5rem;
+  z-index: 1; position: relative;
+}
+
+.price-item {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.btn-white {
+  display: inline-block;
+  background: #fff;
+  color: var(--fire-deep);
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 18px 52px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 1; position: relative;
+}
+.btn-white:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 36px rgba(0,0,0,0.3); }
+
+.guarantee {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.75);
+  margin-top: 1.2rem;
+  z-index: 1; position: relative;
+}
+
+/* ===== POR QUÉ LOLO ===== */
+.why-section {
+  background: var(--dark);
+  padding: 5rem 1.5rem;
+}
+
+.why-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.why-section .section-tag {
+  background: rgba(255,224,102,0.15);
+  color: var(--gold);
+}
+
+.why-section .section-title { color: #fff; }
+.why-section .section-desc { color: rgba(255,255,255,0.6); margin: 0 auto 3rem; }
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  text-align: left;
+}
+
+.why-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,107,53,0.2);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+}
+
+.why-icon { font-size: 2rem; margin-bottom: 0.8rem; display: block; }
+
+.why-title {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.why-title-en {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--fire);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.why-desc {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--dark);
+  border-top: 1px solid rgba(255,107,53,0.15);
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.8rem;
+  color: var(--fire);
+  margin-bottom: 0.5rem;
+}
+
+.footer-tagline {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  nav { padding: 0.8rem 1rem; }
+  .nav-logo { font-size: 1.3rem; }
+  .price-box { padding: 2rem 2rem; }
+  .stats { gap: 1.2rem; }
+  .btn-primary, .btn-white { padding: 16px 32px; font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    Lolo Basic
+    <span class="nav-badge">EN</span>
+  </a>
+  <a href="https://danyyalexlove-collab.github.io/lolo-cursos/lolo-basic-english-web-7.html" target="_blank" class="nav-cta">¡Quiero el curso! 🎯</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-eyebrow">🌎 Para toda Latinoamérica</span>
+  <div class="hero-logo">Lolo <span>Basic</span></div>
+  <div class="hero-sub">English · Inglés en Español</div>
+  <h1 class="hero-headline">El inglés que <em>siempre quisiste</em> aprender — explicado en tu idioma</h1>
+  <p class="hero-desc">Sin clases aburridas. Sin maestros que no te entienden. Apréndelo como alguien de tu propia cultura te lo explicaría.</p>
+  <p class="hero-bilingual"><em>"The English that was always missing for us" — El inglés que nos faltaba.</em></p>
+  <a href="https://danyyalexlove-collab.github.io/lolo-cursos/lolo-basic-english-web-7.html" target="_blank" class="btn-primary">🚀 Empieza ahora — Start Now</a>
+  <span class="btn-sub">Acceso inmediato · Immediate Access · Incluye diccionario</span>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">A1–A2</div>
+      <div class="stat-label">Nivel básico</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">En español</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">🌎</div>
+      <div class="stat-label">Toda LATAM</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">+dic</div>
+      <div class="stat-label">Diccionario incluido</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ INCLUYE -->
+<section class="section">
+  <span class="section-tag">📚 Qué incluye — What's inside</span>
+  <h2 class="section-title">Todo lo que <span>necesitas</span> para empezar</h2>
+  <p class="section-desc">Un curso completo, diseñado especialmente para hispanohablantes que quieren aprender inglés de verdad.</p>
+
+  <div class="cards">
+    <div class="card">
+      <span class="card-icon">🎧</span>
+      <div class="card-title">Audio incluido</div>
+      <span class="card-title-en">Audio included</span>
+      <p class="card-desc">Escucha la pronunciación correcta de cada palabra y frase. Aprende como lo harías con un nativo.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">✅</span>
+      <div class="card-title">Quizzes interactivos</div>
+      <span class="card-title-en">Interactive quizzes</span>
+      <p class="card-desc">Practica y refuerza lo aprendido con ejercicios diseñados para que no olvides nada.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📖</span>
+      <div class="card-title">Lolo Dictionary incluido</div>
+      <span class="card-title-en">Lolo Dictionary — included free</span>
+      <p class="card-desc">300 palabras + 80 Phrasal Verbs con audio. Busca en español o inglés. Nivel A1–A2, con categorías: Vocabulario y Phrasal Verbs.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">📱</span>
+      <div class="card-title">Desde tu celular</div>
+      <span class="card-title-en">Mobile friendly</span>
+      <p class="card-desc">Estudia desde donde estés, cuando quieras. Solo necesitas tu teléfono.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🇲🇽</span>
+      <div class="card-title">Explicado en español</div>
+      <span class="card-title-en">Taught in Spanish</span>
+      <p class="card-desc">Todo explicado en tu idioma, con ejemplos que tienen sentido para nuestra cultura latina.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">⚡</span>
+      <div class="card-title">Acceso inmediato</div>
+      <span class="card-title-en">Instant access</span>
+      <p class="card-desc">Compra y empieza hoy mismo. Sin esperas, sin complicaciones.</p>
+    </div>
+    <div class="card">
+      <span class="card-icon">🚫</span>
+      <div class="card-title">Sin anuncios aburridos</div>
+      <span class="card-title-en">Zero boring ads</span>
+      <p class="card-desc">Aquí no hay interrupciones. Pagas una vez y el curso es 100% tuyo. Sin distracciones, sin publicidad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRECIO -->
+<section class="pricing-section">
+  <span class="pricing-tag">💳 Precio especial de lanzamiento — Solo $350 MXN</span>
+  <h2 class="pricing-title">Invierte en tu futuro hoy.<br><em style="font-style:italic; opacity:0.85;">Invest in your future today.</em></h2>
+  <p class="pricing-sub">Una sola paga, acceso de por vida · One payment, lifetime access</p>
+
+  <div class="price-box">
+    <div class="price-amount"><span class="price-currency">$</span>350 <span style="font-size:1.5rem;">MXN</span></div>
+    <div class="price-period">Pago único · One-time payment</div>
+  </div>
+
+  <div class="price-includes">
+    <span class="price-item">✅ Curso completo A1–A2</span>
+    <span class="price-item">🎧 Audio incluido</span>
+    <span class="price-item">📖 Lolo Dictionary</span>
+    <span class="price-item">300 palabras + 80 Phrasal Verbs</span>
+    <span class="price-item">✅ Quizzes interactivos</span>
+    <span class="price-item">🚫 Sin anuncios</span>
+    <span class="price-item">📱 Acceso desde celular</span>
+    <span class="price-item">⚡ Acceso inmediato</span>
+  </div>
+
+  <a href="https://danyyalexlove-collab.github.io/lolo-cursos/lolo-basic-english-web-7.html" target="_blank" class="btn-white">🎯 ¡Quiero el curso ahora! — Get it now!</a>
+  <p class="guarantee">🔒 Pago seguro · Acceso inmediato después de tu compra</p>
+</section>
+
+<!-- POR QUÉ LOLO -->
+<section class="why-section">
+  <div class="why-inner">
+    <span class="section-tag">💡 ¿Por qué Lolo? — Why Lolo?</span>
+    <h2 class="section-title">No es otro curso más.<br><span style="color: var(--fire);">Este fue hecho para ti.</span></h2>
+    <p class="section-desc">Creado por y para latinos. Porque aprender inglés no debería sentirse como estudiar para un examen que no tiene nada que ver con tu vida.</p>
+
+    <div class="why-grid">
+      <div class="why-item">
+        <span class="why-icon">🗣️</span>
+        <div class="why-title">Nada de tecnicismos</div>
+        <span class="why-title-en">No boring grammar rules</span>
+        <p class="why-desc">Aprendes hablando, no memorizando reglas que no sirven en la vida real.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🌎</span>
+        <div class="why-title">Para toda Latinoamérica</div>
+        <span class="why-title-en">For all of Latin America</span>
+        <p class="why-desc">Desde México hasta Argentina. Este curso entiende nuestra cultura.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">⏱️</span>
+        <div class="why-title">A tu propio ritmo</div>
+        <span class="why-title-en">At your own pace</span>
+        <p class="why-desc">Sin horarios fijos. Estudia cuando puedas, donde puedas.</p>
+      </div>
+      <div class="why-item">
+        <span class="why-icon">🎯</span>
+        <div class="why-title">Inglés práctico</div>
+        <span class="why-title-en">Practical English</span>
+        <p class="why-desc">Lo que realmente usas en el trabajo, viajes y vida diaria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section style="background: var(--off-white); padding: 5rem 1.5rem; text-align: center;">
+  <h2 style="font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900; color: var(--dark); margin-bottom: 0.8rem;">¿Listo para empezar?<br><span style="color: var(--fire);">Ready to start?</span></h2>
+  <p style="font-size: 0.95rem; font-weight: 700; color: var(--muted); margin-bottom: 2rem;">El inglés que nos faltaba ya está aquí. No lo dejes para después.</p>
+  <a href="https://danyyalexlove-collab.github.io/lolo-cursos/lolo-basic-english-web-7.html" target="_blank" class="btn-primary" style="font-size: 1.1rem; padding: 20px 56px;">🚀 ¡Empieza hoy! — Start Today!</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Lolo Basic English</div>
+  <div class="footer-tagline">El inglés que nos faltaba · Para toda Latinoamérica 🌎</div>
+</footer>
+
+</body>
+</html>
